@@ -1,0 +1,3 @@
+Validaciones para hacer la transferencia:
+-Verificar que la cuenta destino no este bloqueada
+-Verificar que la cuenta que transfiere tenga saldo suficiente

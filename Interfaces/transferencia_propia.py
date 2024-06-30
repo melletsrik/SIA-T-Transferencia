@@ -33,3 +33,4 @@ class TransferenciaPropia(tk.Frame):
             self.master.switch_frame(Confirmacion, self.cuenta, cuenta_origen, cuenta_destino, monto, "propia")
         else:
             messagebox.showerror("Error", "Por favor, complete todos los campos")
+

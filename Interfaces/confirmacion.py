@@ -33,9 +33,9 @@ class Confirmacion(tk.Frame):
         cursor = conn.cursor()
         try:
             cursor.execute("""
-                INSERT INTO trs_transferencia (id_tipo_transferencia, numero_cuenta_origen, numero_cuenta_destino, monto, fecha_transferencia) 
+                INSERT INTO trs_transferencia (id_tipo_transferencia, nro_cta_origen, nro_cta_destino, monto, fecha_transferencia) 
                 VALUES (%s, %s, %s, %s, CURRENT_DATE)
-            """, (1, self.cuenta_origen, self.cuenta_destino, self.monto))
+            """, (1, self.cuenta_origen if self.cuenta_origen else self.cuenta, self.cuenta_destino, self.monto))
             conn.commit()
             self.master.switch_frame(Comprobante, self.cuenta, self.cuenta_origen, self.cuenta_destino, self.monto, self.tipo, self.nombre_destino)
         except Exception as e:

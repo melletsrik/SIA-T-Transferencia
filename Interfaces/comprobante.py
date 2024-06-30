@@ -29,3 +29,4 @@ class Comprobante(tk.Frame):
 
     def finalizar(self):
         self.master.switch_frame(Menu, self.cuenta)
+

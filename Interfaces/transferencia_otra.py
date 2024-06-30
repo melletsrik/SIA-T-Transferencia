@@ -28,19 +28,21 @@ class TransferenciaOtra(tk.Frame):
         if cuenta_destino and monto:
             conn = connect()
             cursor = conn.cursor()
+            cursor.execute("SELECT nro_cuenta FROM mae_cuenta WHERE id_cliente = %s", (self.cuenta,))
+            cuenta_origen = cursor.fetchone()[0]  # Obtenemos directamente el número de cuenta
             cursor.execute("""
                 SELECT p.nombre, p.apellido 
                 FROM mae_persona p
-                JOIN mae_cliente c ON p.id_persona = c.id_persona
+                JOIN mae_cliente c ON p.id_persona = c.id_cliente
                 JOIN mae_cuenta cu ON c.id_cliente = cu.id_cliente
-                WHERE cu.numero_cuenta = %s
+                WHERE cu.nro_cuenta = %s
             """, (cuenta_destino,))
             destino = cursor.fetchone()
             conn.close()
 
             if destino:
                 nombre_destino = f"{destino[0]} {destino[1]}"
-                self.master.switch_frame(Confirmacion, self.cuenta, None, cuenta_destino, monto, "otra", nombre_destino)
+                self.master.switch_frame(Confirmacion, self.cuenta, cuenta_origen, cuenta_destino, monto, "otra", nombre_destino)
             else:
                 messagebox.showerror("Error", "Cuenta destino no encontrada")
         else:

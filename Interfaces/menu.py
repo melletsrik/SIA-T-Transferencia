@@ -19,3 +19,4 @@ class Menu(tk.Frame):
 
     def transferencia_otra(self):
         self.master.switch_frame(TransferenciaOtra, self.cuenta)
+

@@ -31,6 +31,32 @@ class TransferenciaOtra(tk.Frame):
             try:
                 cursor.execute("SELECT nro_cuenta FROM mae_cuenta WHERE id_cliente = %s", (self.id_cliente,))
                 cuentas_origen = cursor.fetchall()  # Obtenemos todas las cuentas del cliente
+                try:
+                    monto = float(monto)
+                except ValueError:
+                    messagebox.showerror("Error", "El monto debe ser un número")
+                    return
+
+                # Validar que el monto sea mayor que cero
+                if monto <= 0:
+                    messagebox.showerror("Error", "El monto debe ser mayor que cero")
+                    return
+                
+                
+                # Obtener todas las cuentas del cliente
+                cursor.execute("SELECT nro_cuenta, saldo_actual FROM mae_cuenta WHERE id_cliente = %s", (self.id_cliente,))
+                cuentas_origen = cursor.fetchall()
+                if not cuentas_origen:
+                    messagebox.showerror("Error", "No se encontraron cuentas para el cliente")
+                    return
+
+                cuenta_origen, saldo_actual = cuentas_origen[0]  # Seleccionamos la primera cuenta del cliente como ejemplo
+
+                # Validar que el monto no exceda el saldo actual de la cuenta origen
+                if monto > saldo_actual:
+                    messagebox.showerror("Error", "El monto excede el saldo actual de la cuenta origen")
+                    return
+                
                 if cuentas_origen:
                     cuenta_origen = cuentas_origen[0][0]  # Seleccionamos la primera cuenta del cliente como ejemplo
                     cursor.execute("""

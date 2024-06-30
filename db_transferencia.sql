@@ -1,73 +1,96 @@
 CREATE TABLE mae_persona (
-  id_persona integer PRIMARY KEY,
-  nombre varchar(100) NOT NULL,
-  apellido varchar(100) NOT NULL,
-  fecha_nacimiento date NOT NULL,
-  correo varchar(255) NOT NULL,
-  numero_tel varchar(15) NOT NULL,
-  direccion varchar(255) NOT NULL
+    id_persona VARCHAR(8) PRIMARY KEY NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    correo VARCHAR(255) NOT NULL,
+    telefono VARCHAR(9) NOT NULL,
+    direccion VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE mae_cliente (
-  id_cliente integer PRIMARY KEY,
-  id_persona integer NOT NULL,
-  tipo_cliente varchar(20) NOT NULL,
-  FOREIGN KEY (id_persona) REFERENCES mae_persona (id_persona),
-  UNIQUE (id_persona) -- Un cliente no puede estar asociado a más de una persona
+    id_cliente VARCHAR(8) PRIMARY KEY NOT NULL,
+    contrasenia VARCHAR(20) NOT NULL,
+    tipo_cliente VARCHAR(255) NOT NULL,
+	FOREIGN KEY (id_cliente) REFERENCES mae_persona (id_persona)
 );
 
-CREATE TABLE mae_cuenta (
-  id_cuenta integer PRIMARY KEY,
-  id_cliente integer NOT NULL,
-  numero_cuenta varchar(255) NOT NULL UNIQUE,
-  tipo_cuenta varchar(255) NOT NULL,
-  balance_actual decimal(10, 2) NOT NULL,
-  fecha_creacion timestamp NULL,
-  fecha_cierre timestamp NULL,
-  estado_cuenta varchar(255) NOT NULL, -- Puede estar activa, suspendida, cerrada o bloqueada
-  FOREIGN KEY (id_cliente) REFERENCES mae_cliente (id_cliente)
+CREATE TABLE mae_tipo_cuenta (
+    id_tipo_cuenta INT PRIMARY KEY,
+    descripcion VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE mae_tipo_transferencia (
-  id_tipo_transfer integer PRIMARY KEY,
-  descripcion varchar(255) NOT NULL
+    id_tipo_transferencia SERIAL PRIMARY KEY,
+    descripcion VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE mae_cuenta (
+    nro_cuenta VARCHAR(25) PRIMARY KEY NOT NULL,
+    id_cliente VARCHAR(8) NOT NULL,
+    id_tipo_cuenta INT NOT NULL,
+    saldo_actual NUMERIC(15, 2) NOT NULL,
+    fecha_apertura DATE NOT NULL,
+    fecha_cierre DATE,
+    estado_cuenta VARCHAR(255) NOT NULL,
+    moneda BIGINT NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES mae_cliente (id_cliente),
+    FOREIGN KEY (id_tipo_cuenta) REFERENCES mae_tipo_cuenta (id_tipo_cuenta)
 );
 
 CREATE TABLE trs_transferencia (
-  id_transferencia integer PRIMARY KEY,
-  id_cuenta integer NOT NULL,
-  id_tipo_transfer integer NOT NULL,
-  monto decimal(10, 2) NOT NULL,
-  fecha_transfer datetime NOT NULL,
-  FOREIGN KEY (id_cuenta) REFERENCES mae_cuenta (id_cuenta),
-  FOREIGN KEY (id_tipo_transfer) REFERENCES mae_tipo_transferencia (id_tipo_transfer)
+    id_transferencia SERIAL PRIMARY KEY,
+    id_tipo_transferencia INT NOT NULL,
+    nro_cta_origen VARCHAR(25) NOT NULL,
+    nro_cta_destino VARCHAR(25) NOT NULL,
+    monto NUMERIC(15, 2) NOT NULL,
+    fecha_transferencia DATE NOT NULL,
+    monto_itf NUMERIC(15, 2) NOT NULL,
+    FOREIGN KEY (nro_cta_origen) REFERENCES mae_cuenta (nro_cuenta),
+    FOREIGN KEY (id_tipo_transferencia) REFERENCES mae_tipo_transferencia (id_tipo_transferencia),
+    FOREIGN KEY (nro_cta_destino) REFERENCES mae_cuenta (nro_cuenta)
 );
 
--- REGISTROS DE PRUEBA PARA TABLAS RENOMBRADAS
-INSERT INTO mae_persona (id_persona, nombre, apellido, fecha_nacimiento, correo, numero_tel, direccion) VALUES
-(11111111, 'Napoleón', 'Pérez', '1980-05-15', 'napoleon.perez@gmail.com', '555-1234', 'Calle Melgar 123'),
-(22222222, 'Alexia', 'García', '1992-07-20', 'alexia.garcia@gmail.com', '555-5678', 'Avenida Siempre Viva 456'),
-(33333333, 'Charles', 'Rosas', '1985-03-10', 'charles.rosasz@gmail.com', '555-8765', 'Calle Luna 789');
+-- Crear trigger para calcular el ITF automáticamente
+CREATE OR REPLACE FUNCTION calculate_itf_before_insert() 
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.monto >= 1000 THEN
+        NEW.monto_itf = NEW.monto * 0.005; -- Ejemplo: ITF del 0.5%
+    ELSE
+        NEW.monto_itf = 0;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-INSERT INTO mae_cliente (id_cliente, id_persona, tipo_cliente) VALUES
-(1, 11111111, 'Individual'),
-(2, 22222222, 'Individual'),
-(3, 33333333, 'Corporativo');
+CREATE TRIGGER calculate_itf_before_insert
+BEFORE INSERT ON trs_transferencia
+FOR EACH ROW
+EXECUTE FUNCTION calculate_itf_before_insert();
 
-INSERT INTO mae_cuenta (id_cuenta, id_cliente, numero_cuenta, tipo_cuenta, balance_actual, fecha_creacion, fecha_cierre, estado_cuenta) VALUES
-(1, 1, '1001-2345-6789', 'Ahorros', 1500.50, '2020-01-01 10:00:00', NULL, 'Activa'),
-(2, 2, '2002-3456-7890', 'Corriente', 2500.75, '2019-06-15 14:30:00', NULL, 'Activa'),
-(3, 3, '3003-4567-8901', 'Ahorros', 5000.00, '2018-11-20 09:00:00', NULL, 'Activa');
+INSERT INTO mae_persona (id_persona, nombre, apellido, fecha_nacimiento, correo, telefono, direccion) VALUES
+('12345678', 'Napoleon', 'Perez', '1985-07-23', 'juan.perez@example.com', '987654321', 'Av. Siempre Viva 123, Lima'),
+('98765432', 'Maria', 'Lopez', '1990-11-15', 'maria.lopez@example.com', '912345678', 'Calle Falsa 456, Arequipa');
 
-INSERT INTO mae_tipo_transferencia (id_tipo_transfer, descripcion) VALUES
-(1, 'Transferencia entre cuentas del mismo banco'),
-(2, 'Transferencia interbancaria');
+INSERT INTO mae_cliente (id_cliente, contrasenia, tipo_cliente) VALUES
+('98765432', 'pass1234', 'individual'),
+('12345678', 'pass5678', 'empresarial');
 
-INSERT INTO trs_transferencia (id_transferencia, id_cuenta, id_tipo_transfer, monto, fecha_transfer) VALUES
-(1, 1, 1, 100.50, '2024-01-10 10:15:00'),
-(2, 2, 2, 200.75, '2024-02-20 12:30:00'),
-(3, 3, 2, 300.00, '2024-03-15 14:45:00'),
-(4, 1, 2, 150.25, '2024-04-10 16:00:00'),
-(5, 2, 1, 250.50, '2024-05-05 11:00:00');
+INSERT INTO mae_tipo_cuenta (id_tipo_cuenta, descripcion) VALUES
+(1, 'Cuenta de Ahorros'),
+(2, 'Cuenta Corriente');
 
+INSERT INTO mae_tipo_transferencia (descripcion) VALUES
+('Transferencia a otra cuenta'),
+('Transferencia a una cuenta propia');
 
+INSERT INTO mae_cuenta (nro_cuenta, id_cliente, id_tipo_cuenta, saldo_actual, fecha_apertura, fecha_cierre, estado_cuenta, moneda) VALUES
+('123456789012345', '12345678', 1, 1500.50, '2020-01-15', NULL, 'activa', 1),
+('987654321098765', '98765432', 2, 25000.00, '2019-05-23', NULL, 'activa', 1);
+('987654321098766', '98765432', 1, 5000.00, '2020-07-10', NULL, 'activa', 1);
+
+INSERT INTO trs_transferencia (id_tipo_transferencia, nro_cta_origen, nro_cta_destino, monto, fecha_transferencia, monto_itf) VALUES
+(1, '123456789012345', '987654321098765', 1200.00, '2024-06-15', 6.00), -- Transferencia a cuenta de tercero en el mismo banco
+(2, '987654321098765', '123456789012345', 950.00, '2024-06-18', 0.00), -- Transferencia a otra cuenta propia en el mismo banco
+(2, '987654321098766', '987654321098765', 1000.00, '2024-06-20', 5.00); -- Transferencia a otra cuenta propia en el mismo banco

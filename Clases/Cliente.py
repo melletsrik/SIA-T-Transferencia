@@ -1,13 +1,8 @@
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-from Clases import Conect
-from Clases import *
-import Persona
+from .conexion import Base
 
-conexion = Conect()
-
-
-class Cliente(conexion.Base):
+class Cliente(Base):
     __tablename__ = 'mae_cliente'
 
     id_cliente = Column(String(8), primary_key=True)

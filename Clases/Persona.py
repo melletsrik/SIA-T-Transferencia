@@ -1,9 +1,7 @@
-from sqlalchemy import Column, Integer, String, Date, Numeric, ForeignKey
-import Conect
+from sqlalchemy import Column, String, Date
+from .conexion import Base
 
-conexion = Conect()
-
-class Persona(conexion.Base):
+class Persona(Base):
     __tablename__ = 'mae_persona'
 
     id_persona = Column(String(8), primary_key=True)

@@ -1,11 +1,8 @@
-from psycopg2 import Date
-from sqlalchemy import Column, ForeignKey, Numeric, String, Integer
+from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey
 from sqlalchemy.orm import relationship
-from Clases import Conect
+from .conexion import Base
 
-conexion = Conect()
-
-class Transferencia(conexion.Base):
+class Transferencia(Base):
     __tablename__ = 'trs_transferencia'
 
     id_transferencia = Column(Integer, primary_key=True)
@@ -22,3 +19,5 @@ class Transferencia(conexion.Base):
 
     def __repr__(self):
         return f"<Transferencia(id_transferencia={self.id_transferencia}, monto={self.monto})>"
+
+TipoTransferencia.transferencias = relationship('Transferencia', back_populates='tipo_transferencia')

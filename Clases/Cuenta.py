@@ -1,11 +1,8 @@
-from psycopg2 import Date
-from sqlalchemy import Column, ForeignKey, Numeric, String, Integer
+from sqlalchemy import Column, String, Integer, Numeric, Date, ForeignKey
 from sqlalchemy.orm import relationship
-from Clases import Conect
+from .conexion import Base
 
-conexion = Conect()
-
-class Cuenta(conexion.Base):
+class Cuenta(Base):
     __tablename__ = 'mae_cuenta'
 
     nro_cuenta = Column(String(25), primary_key=True)
@@ -22,3 +19,6 @@ class Cuenta(conexion.Base):
 
     def __repr__(self):
         return f"<Cuenta(nro_cuenta='{self.nro_cuenta}', saldo_actual={self.saldo_actual})>"
+
+Cliente.cuentas = relationship('Cuenta', back_populates='cliente')
+

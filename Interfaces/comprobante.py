@@ -28,5 +28,5 @@ class Comprobante(tk.Frame):
         tk.Button(self, text="Finalizar", command=self.finalizar).pack(pady=20)
 
     def finalizar(self):
-        self.master.switch_frame(tk.Menu, self.cuenta)
+        self.master.switch_frame(Menu, self.cuenta)
 

@@ -56,7 +56,7 @@ CREATE OR REPLACE FUNCTION calculate_itf_before_insert()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.monto >= 1000 THEN
-        NEW.monto_itf = NEW.monto * 0.005; -- Ejemplo: ITF del 0.5%
+        NEW.monto_itf = NEW.monto * 0.00005; -- Ejemplo: ITF del 0.5%
     ELSE
         NEW.monto_itf = 0;
     END IF;

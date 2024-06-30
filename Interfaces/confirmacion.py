@@ -26,6 +26,8 @@ class Confirmacion(tk.Frame):
             tk.Label(self, text=f"A: {self.cuenta_destino} ({self.nombre_destino})").pack(pady=5)
 
         tk.Label(self, text=f"Monto: {self.monto}").pack(pady=5)
+        self.itf_label = tk.Label(self, text=f"ITF: {self.calcular_itf(self.monto):.2f}")
+        self.itf_label.pack(pady=5)
         tk.Button(self, text="Confirmar", command=self.realizar_transferencia).pack(pady=20)
         tk.Button(self, text="Volver", command=self.volver).pack(pady=10)
 
@@ -39,18 +41,23 @@ class Confirmacion(tk.Frame):
         else:
             messagebox.showerror("Error", "Tipo de transferencia no válido")
 
+    def calcular_itf(self, monto):
+        return monto * 0.00005 if monto >= 1000 else 0
+
     def realizar_transferencia(self):
         conn = connect()
         cursor = conn.cursor()
+        itf = self.calcular_itf(self.monto)
         try:
             cursor.execute("""
-                INSERT INTO trs_transferencia (id_tipo_transferencia, nro_cta_origen, nro_cta_destino, monto, fecha_transferencia) 
-                VALUES (%s, %s, %s, %s, CURRENT_DATE)
-            """, (1, self.cuenta_origen if self.cuenta_origen else self.id_cliente, self.cuenta_destino, self.monto))
+                INSERT INTO trs_transferencia (id_tipo_transferencia, nro_cta_origen, nro_cta_destino, monto, fecha_transferencia, monto_itf) 
+                VALUES (%s, %s, %s, %s, CURRENT_DATE, %s)
+            """, (1, self.cuenta_origen if self.cuenta_origen else self.id_cliente, self.cuenta_destino, self.monto, itf))
             conn.commit()
-            self.master.switch_frame(Comprobante, self.id_cliente, self.cuenta_origen, self.cuenta_destino, self.monto, self.tipo, self.nombre_destino)
+            self.master.switch_frame(Comprobante, self.id_cliente, self.cuenta_origen, self.cuenta_destino, self.monto, self.tipo, self.nombre_destino, itf)
         except Exception as e:
             conn.rollback()
             messagebox.showerror("Error", f"Error al realizar la transferencia: {e}")
         finally:
             conn.close()
+

@@ -1,7 +1,7 @@
 import tkinter as tk
 
 class Comprobante(tk.Frame):
-    def __init__(self, master, cuenta, cuenta_origen, cuenta_destino, monto, tipo, nombre_destino=None):
+    def __init__(self, master, cuenta, cuenta_origen, cuenta_destino, monto, tipo, nombre_destino=None, itf=0):
         super().__init__(master)
         self.master = master
         self.cuenta = cuenta
@@ -10,6 +10,7 @@ class Comprobante(tk.Frame):
         self.monto = monto
         self.tipo = tipo
         self.nombre_destino = nombre_destino
+        self.itf = itf
         self.create_widgets()
 
     def create_widgets(self):
@@ -23,6 +24,7 @@ class Comprobante(tk.Frame):
             tk.Label(self, text=f"A: {self.cuenta_destino} ({self.nombre_destino})").pack(pady=5)
 
         tk.Label(self, text=f"Monto: {self.monto}").pack(pady=5)
+        tk.Label(self, text=f"ITF: {self.itf:.2f}").pack(pady=5)
         tk.Label(self, text="Transferencia realizada con éxito").pack(pady=20)
 
         tk.Button(self, text="Finalizar", command=self.finalizar).pack(pady=20)
@@ -30,4 +32,5 @@ class Comprobante(tk.Frame):
     def finalizar(self):
         from menu import Menu  # Importación diferida
         self.master.switch_frame(Menu, self.cuenta)
+
 

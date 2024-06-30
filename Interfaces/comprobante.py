@@ -19,7 +19,7 @@ class Comprobante(tk.Frame):
             tk.Label(self, text=f"De: {self.cuenta_origen}").pack(pady=5)
             tk.Label(self, text=f"A: {self.cuenta_destino}").pack(pady=5)
         else:
-            tk.Label(self, text=f"De: {self.cuenta}").pack(pady=5)
+            tk.Label(self, text=f"De: {self.cuenta_origen}").pack(pady=5)
             tk.Label(self, text=f"A: {self.cuenta_destino} ({self.nombre_destino})").pack(pady=5)
 
         tk.Label(self, text=f"Monto: {self.monto}").pack(pady=5)
@@ -28,5 +28,5 @@ class Comprobante(tk.Frame):
         tk.Button(self, text="Finalizar", command=self.finalizar).pack(pady=20)
 
     def finalizar(self):
-        self.master.switch_frame(Menu, self.cuenta)
+        self.master.switch_frame(tk.Menu, self.cuenta)
 

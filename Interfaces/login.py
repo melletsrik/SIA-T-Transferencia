@@ -11,8 +11,8 @@ class Login(tk.Frame):
 
     def create_widgets(self):
         tk.Label(self, text="ID Cliente:").pack(pady=10)
-        self.cuenta_entry = tk.Entry(self)
-        self.cuenta_entry.pack(pady=5)
+        self.id_cliente_entry  = tk.Entry(self)
+        self.id_cliente_entry.pack(pady=5)
 
         tk.Label(self, text="Contraseña:").pack(pady=10)
         self.password_entry = tk.Entry(self, show='*')
@@ -21,15 +21,15 @@ class Login(tk.Frame):
         tk.Button(self, text="Ingresar", command=self.login).pack(pady=20)
 
     def login(self):
-        cuenta = self.cuenta_entry.get()
+        id_cliente = self.id_cliente_entry.get()
         password = self.password_entry.get()
         conn = connect()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM mae_cliente WHERE id_cliente=%s AND contrasenia=%s", (cuenta, password))
+        cursor.execute("SELECT * FROM mae_cliente WHERE id_cliente=%s AND contrasenia=%s", (id_cliente, password))
         user = cursor.fetchone()
         conn.close()
 
         if user:
-            self.master.switch_frame(Menu, cuenta)
+            self.master.switch_frame(Menu, id_cliente)
         else:
             messagebox.showerror("Error", "Credenciales incorrectas")

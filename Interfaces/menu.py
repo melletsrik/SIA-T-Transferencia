@@ -3,10 +3,10 @@ from transferencia_propia import TransferenciaPropia  # Asegúrate de importar T
 from transferencia_otra import TransferenciaOtra  # Asegúrate de importar TransferenciaOtra
 
 class Menu(tk.Frame):
-    def __init__(self, master, cuenta):
+    def __init__(self, master, id_cliente):
         super().__init__(master)
         self.master = master
-        self.cuenta = cuenta
+        self.id_cliente = id_cliente
         self.create_widgets()
 
     def create_widgets(self):
@@ -15,8 +15,8 @@ class Menu(tk.Frame):
         tk.Button(self, text="Transferencia a Otras Cuentas", command=self.transferencia_otra).pack(pady=10)
 
     def transferencia_propia(self):
-        self.master.switch_frame(TransferenciaPropia, self.cuenta)
+        self.master.switch_frame(TransferenciaPropia, self.id_cliente)
 
     def transferencia_otra(self):
-        self.master.switch_frame(TransferenciaOtra, self.cuenta)
+        self.master.switch_frame(TransferenciaOtra, self.id_cliente)
 

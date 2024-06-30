@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-DB_URL = 'postgresql://username:password@hostname/database_name'
+DB_URL = 'postgresql://postgres:root@localhost/db_transferencia'
 engine = create_engine(DB_URL)
 Base = declarative_base()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -19,5 +19,3 @@ class Conexion:
             yield db
         finally:
             db.close()
-
- 

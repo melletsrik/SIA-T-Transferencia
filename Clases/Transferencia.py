@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, Numeric, Date, ForeignKey
 from sqlalchemy.orm import relationship
+
+from clases.tipo_transferencia import TipoTransferencia
 from .conexion import Base
 
 class Transferencia(Base):

@@ -1,5 +1,7 @@
 from sqlalchemy import Column, String, Integer, Numeric, Date, ForeignKey
 from sqlalchemy.orm import relationship
+
+from clases import Cliente
 from .conexion import Base
 
 class Cuenta(Base):
@@ -21,4 +23,3 @@ class Cuenta(Base):
         return f"<Cuenta(nro_cuenta='{self.nro_cuenta}', saldo_actual={self.saldo_actual})>"
 
 Cliente.cuentas = relationship('Cuenta', back_populates='cliente')
-

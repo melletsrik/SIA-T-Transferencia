@@ -12,5 +12,3 @@ class TipoTransferencia(Base):
 
     def __repr__(self):
         return f"<TipoTransferencia(id_tipo_transferencia={self.id_tipo_transferencia}, descripcion='{self.descripcion}')>"
-
-

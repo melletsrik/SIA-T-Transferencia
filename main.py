@@ -8,21 +8,9 @@ conexion.Base.metadata.create_all(conexion.engine)
 db = next(conexion.get_db())
 
 # Ejemplo de uso: insertar datos en las tablas
-
-# Insertar personas
-persona1 = Persona(id_persona='12345678', nombre='Napoleon', apellido='Perez',
-                   fecha_nacimiento='1985-07-23', correo='juan.perez@example.com',
-                   telefono='987654321', direccion='Av. Siempre Viva 123, Lima')
-persona2 = Persona(id_persona='98765432', nombre='Maria', apellido='Lopez',
-                   fecha_nacimiento='1990-11-15', correo='maria.lopez@example.com',
-                   telefono='912345678', direccion='Calle Falsa 456, Arequipa')
-
-db.add_all([persona1, persona2])
-db.commit()
-
 # Insertar clientes
-cliente1 = Cliente(id_cliente='12345678', contrasenia='pass5678', tipo_cliente='empresarial', id_persona='12345678')
-cliente2 = Cliente(id_cliente='98765432', contrasenia='pass1234', tipo_cliente='individual', id_persona='98765432')
+cliente1 = Cliente(id_cliente='12345678', contrasenia='pass5678', tipo_cliente='empresarial')
+cliente2 = Cliente(id_cliente='98765432', contrasenia='pass1234', tipo_cliente='individual')
 
 db.add_all([cliente1, cliente2])
 db.commit()

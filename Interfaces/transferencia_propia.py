@@ -24,6 +24,11 @@ class TransferenciaPropia(tk.Frame):
         self.monto_entry.pack(pady=5)
 
         tk.Button(self, text="Siguiente", command=self.confirmar).pack(pady=20)
+        tk.Button(self, text="Volver al Menú", command=self.volver_menu).pack(pady=10)
+
+    def volver_menu(self):
+        from menu import Menu
+        self.master.switch_frame(Menu, self.cuenta)
 
     def confirmar(self):
         """ cuenta_origen = self.cuenta_origen_entry.get()

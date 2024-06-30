@@ -27,6 +27,17 @@ class Confirmacion(tk.Frame):
 
         tk.Label(self, text=f"Monto: {self.monto}").pack(pady=5)
         tk.Button(self, text="Confirmar", command=self.realizar_transferencia).pack(pady=20)
+        tk.Button(self, text="Volver", command=self.volver).pack(pady=10)
+
+    def volver(self):
+        if self.tipo == "propia":
+            from transferencia_propia import TransferenciaPropia
+            self.master.switch_frame(TransferenciaPropia, self.id_cliente)
+        elif self.tipo == "otra":
+            from transferencia_otra import TransferenciaOtra
+            self.master.switch_frame(TransferenciaOtra, self.id_cliente)
+        else:
+            messagebox.showerror("Error", "Tipo de transferencia no válido")
 
     def realizar_transferencia(self):
         conn = connect()

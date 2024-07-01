@@ -11,13 +11,28 @@ class TransferenciaPropia(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
+        # Conectar a la base de datos y obtener las cuentas del cliente
+        conn = connect()
+        cur = conn.cursor()
+        cur.execute("SELECT nro_cuenta FROM mae_cuenta WHERE id_cliente = %s", (self.cuenta,))
+        cuentas = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        # Extraer los números de cuenta en una lista
+        self.cuentas = [cuenta[0] for cuenta in cuentas]
+
         tk.Label(self, text="Cuenta Origen:").pack(pady=10)
-        self.cuenta_origen_entry = tk.Entry(self)
-        self.cuenta_origen_entry.pack(pady=5)
+        self.cuenta_origen_var = tk.StringVar(self)
+        self.cuenta_origen_var.set(self.cuentas[0])  # Establecer el primer valor por defecto
+        self.cuenta_origen_menu = tk.OptionMenu(self, self.cuenta_origen_var, *self.cuentas)
+        self.cuenta_origen_menu.pack(pady=5)
 
         tk.Label(self, text="Cuenta Destino:").pack(pady=10)
-        self.cuenta_destino_entry = tk.Entry(self)
-        self.cuenta_destino_entry.pack(pady=5)
+        self.cuenta_destino_var = tk.StringVar(self)
+        self.cuenta_destino_var.set(self.cuentas[0])  # Establecer el primer valor por defecto
+        self.cuenta_destino_menu = tk.OptionMenu(self, self.cuenta_destino_var, *self.cuentas)
+        self.cuenta_destino_menu.pack(pady=5)
 
         tk.Label(self, text="Monto:").pack(pady=10)
         self.monto_entry = tk.Entry(self)
@@ -31,17 +46,13 @@ class TransferenciaPropia(tk.Frame):
         self.master.switch_frame(Menu, self.cuenta)
 
     def confirmar(self):
-        """ cuenta_origen = self.cuenta_origen_entry.get()
-        cuenta_destino = self.cuenta_destino_entry.get()
+        cuenta_origen = self.cuenta_origen_var.get()
+        cuenta_destino = self.cuenta_destino_var.get()
         monto = self.monto_entry.get()
 
-        if cuenta_origen and cuenta_destino and monto:
-            self.master.switch_frame(Confirmacion, self.cuenta, cuenta_origen, cuenta_destino, monto, "propia")
-        else:
-            messagebox.showerror("Error", "Por favor, complete todos los campos")"""
-        cuenta_origen = self.cuenta_origen_entry.get() 
-        cuenta_destino = self.cuenta_destino_entry.get()
-        monto = self.monto_entry.get()
+        if cuenta_origen == cuenta_destino:
+            messagebox.showerror("Error", "La cuenta origen y la cuenta destino no pueden ser iguales")
+            return
 
         if not (cuenta_origen and cuenta_destino and monto):
             messagebox.showerror("Error", "Por favor, complete todos los campos")
@@ -78,8 +89,6 @@ class TransferenciaPropia(tk.Frame):
         conn.close()
         if result_destino is None:
             messagebox.showerror("Error", "La cuenta destino no existe")
-            cur.close()
-            conn.close()
             return
 
         # Validar que el monto no exceda el saldo actual de la cuenta origen

@@ -12,7 +12,7 @@ CREATE TABLE mae_cliente (
     id_cliente VARCHAR(8) PRIMARY KEY NOT NULL,
     contrasenia VARCHAR(20) NOT NULL,
     tipo_cliente VARCHAR(255) NOT NULL,
-	FOREIGN KEY (id_cliente) REFERENCES mae_persona (id_persona)
+    FOREIGN KEY (id_cliente) REFERENCES mae_persona (id_persona)
 );
 
 CREATE TABLE mae_tipo_cuenta (
@@ -25,6 +25,11 @@ CREATE TABLE mae_tipo_transferencia (
     descripcion VARCHAR(100) NOT NULL
 );
 
+CREATE TABLE mae_tipo_moneda (
+    id_moneda INT PRIMARY KEY,
+    descripcion VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE mae_cuenta (
     nro_cuenta VARCHAR(25) PRIMARY KEY NOT NULL,
     id_cliente VARCHAR(8) NOT NULL,
@@ -33,9 +38,10 @@ CREATE TABLE mae_cuenta (
     fecha_apertura DATE NOT NULL,
     fecha_cierre DATE,
     estado_cuenta VARCHAR(255) NOT NULL,
-    moneda BIGINT NOT NULL,
+    id_moneda INT NOT NULL,
     FOREIGN KEY (id_cliente) REFERENCES mae_cliente (id_cliente),
-    FOREIGN KEY (id_tipo_cuenta) REFERENCES mae_tipo_cuenta (id_tipo_cuenta)
+    FOREIGN KEY (id_tipo_cuenta) REFERENCES mae_tipo_cuenta (id_tipo_cuenta),
+    FOREIGN KEY (id_moneda) REFERENCES mae_tipo_moneda (id_moneda)
 );
 
 CREATE TABLE trs_transferencia (
@@ -85,7 +91,11 @@ INSERT INTO mae_tipo_transferencia (descripcion) VALUES
 ('Transferencia a otra cuenta'),
 ('Transferencia a una cuenta propia');
 
-INSERT INTO mae_cuenta (nro_cuenta, id_cliente, id_tipo_cuenta, saldo_actual, fecha_apertura, fecha_cierre, estado_cuenta, moneda) VALUES
+INSERT INTO mae_tipo_moneda (id_moneda, descripcion) VALUES
+(1, 'Soles'),
+(2, 'Dólares');
+
+INSERT INTO mae_cuenta (nro_cuenta, id_cliente, id_tipo_cuenta, saldo_actual, fecha_apertura, fecha_cierre, estado_cuenta, id_moneda) VALUES
 ('123456789012345', '12345678', 1, 1500.50, '2020-01-15', NULL, 'activa', 1),
 ('987654321098765', '98765432', 2, 25000.00, '2019-05-23', NULL, 'activa', 1),
 ('987654321098766', '98765432', 1, 5000.00, '2020-07-10', NULL, 'activa', 1);

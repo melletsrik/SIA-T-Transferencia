@@ -21,7 +21,7 @@ CREATE TABLE mae_tipo_cuenta (
 );
 
 CREATE TABLE mae_tipo_transferencia (
-    id_tipo_transferencia SERIAL PRIMARY KEY,
+    id_tipo_transferencia INT PRIMARY KEY,
     descripcion VARCHAR(100) NOT NULL
 );
 
@@ -87,9 +87,9 @@ INSERT INTO mae_tipo_cuenta (id_tipo_cuenta, descripcion) VALUES
 (1, 'Cuenta de Ahorros'),
 (2, 'Cuenta Corriente');
 
-INSERT INTO mae_tipo_transferencia (descripcion) VALUES
-('Transferencia a otra cuenta'),
-('Transferencia a una cuenta propia');
+INSERT INTO mae_tipo_transferencia (id_tipo_transferencia, descripcion) VALUES
+(1, 'Transferencia a otra cuenta'),
+(2, 'Transferencia a una cuenta propia');
 
 INSERT INTO mae_tipo_moneda (id_moneda, descripcion) VALUES
 (1, 'Soles'),

@@ -98,7 +98,9 @@ INSERT INTO mae_tipo_moneda (id_moneda, descripcion) VALUES
 INSERT INTO mae_cuenta (nro_cuenta, id_cliente, id_tipo_cuenta, saldo_actual, fecha_apertura, fecha_cierre, estado_cuenta, id_moneda) VALUES
 ('123456789012345', '12345678', 1, 1500.50, '2020-01-15', NULL, 'activa', 1),
 ('987654321098765', '98765432', 2, 25000.00, '2019-05-23', NULL, 'activa', 1),
-('987654321098766', '98765432', 1, 5000.00, '2020-07-10', NULL, 'activa', 1);
+('987654321098766', '98765432', 1, 5000.00, '2020-07-10', NULL, 'activa', 1),
+('987654321098764', '98746432', 1, 10000.00, '2020-07-10', NULL, 'activa', 2),
+('987654321098763', '98945432', 1, 8000.00, '2020-07-10', NULL, 'activa', 2);
 
 INSERT INTO trs_transferencia (id_tipo_transferencia, nro_cta_origen, nro_cta_destino, monto, fecha_transferencia, monto_itf) VALUES
 (1, '123456789012345', '987654321098765', 1200.00, '2024-06-15', 6.00), -- Transferencia a cuenta de tercero en el mismo banco
